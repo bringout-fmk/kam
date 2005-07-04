@@ -1,9 +1,9 @@
 VERZIJA=CDX
 MODUL=km_1rpt
 
-include /cl/sigma/Makefile_clipper
+include /sclib/Makefile_clipper
 
-SRCDOSROOT=h:\\cl\\sigma\\fmk\\kam\\rpt\\1g\\
+SRCDOSROOT=c:\\dev\\fmk\\kam\\rpt\\1g\\
 
 PRGS=rpt_kart.prg
 

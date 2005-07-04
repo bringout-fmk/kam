@@ -1,5 +1,4 @@
-#include "\cl\sigma\fmk\kam\kam.ch"
-
+#include "\dev\fmk\kam\kam.ch"
 
 function Pars()
 

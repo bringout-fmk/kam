@@ -1,4 +1,4 @@
-#include "\cl\sigma\fmk\kam\kam.ch"
+#include "\dev\fmk\kam\kam.ch"
 
 function Unos()
 *{
@@ -89,11 +89,11 @@ RETURN lVrati
 *}
 
 
-****************************************************************
-* poziva je ObjDbedit u KnjNal
-* c-T  -  Brisanje stavke,  F5 - kontrola zbira za jedan nalog
-* F6 -  Suma naloga, ENTER-edit stavke, c-A - ispravka naloga
-****************************************************************
+//****************************************************************
+//* poziva je ObjDbedit u KnjNal
+//* c-T  -  Brisanje stavke,  F5 - kontrola zbira za jedan nalog
+//* F6 -  Suma naloga, ENTER-edit stavke, c-A - ispravka naloga
+//****************************************************************
 function EdPRIPR()
 *{
 local nTr2
@@ -340,13 +340,13 @@ return DE_CONT
 *}
 
 
-*******************************
+//*******************************
 function ObracV(cidpartner,fprint)
-*
-* ova fja se poziva u dva kruga
-* u prvom krugu se obracunava
-* nOsnDug, nKamate
-*******************************
+//*
+//* ova fja se poziva u dva kruga
+//* u prvom krugu se obracunava
+//* nOsnDug, nKamate
+//*******************************
 local nKumKamSD:=0                        // nKumKamSD - ( kumulativ kamate
                                           //               sa denominacijom )
 if fprint==NIL                            // nKumKamBD - ( kumulativ kamate
@@ -660,9 +660,9 @@ return nSKumKam
 *}
 
 
-**************************
+//**************************
 function Nstrana(cTip)
-**************************
+//**************************
 
 if ctip==NIL
   cTip:=""
@@ -694,13 +694,13 @@ return
 
 
 
-************************************************************
+//************************************************************
 FUNCTION IznosNaDan(nIznos,dTrazeni,dProsli,cM1)
-*
-* dtrazeni = 30.06.98
-* dprosli  = 15.05.94
-* znaci: uracunaj sve denominacije od 15.05.94 do 30.06.98
-************************************************************
+//*
+//* dtrazeni = 30.06.98
+//* dprosli  = 15.05.94
+//* znaci: uracunaj sve denominacije od 15.05.94 do 30.06.98
+//************************************************************
 *{
 LOCAL nK:=1
  PushWA()
@@ -789,9 +789,9 @@ return
 
 
 
-*********************
+//*********************
 function BrisiKum()
-*********************
+//*********************
 *{
 local nArr:=SELECT()
 Box(,3,60)

@@ -1,9 +1,9 @@
 VERZIJA=CDX
 MODUL=km_1dok
 
-include /cl/sigma/Makefile_clipper
+include /sclib/Makefile_clipper
 
-SRCDOSROOT=h:\\cl\\sigma\\fmk\\kam\\dok\\1g\\
+SRCDOSROOT=c:\\dev\\fmk\\kam\\dok\\1g\\
 
 PRGS=unos.prg kckstopa.prg
 

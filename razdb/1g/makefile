@@ -1,9 +1,9 @@
 VERZIJA=CDX
 MODUL=km_1raz
 
-include /cl/sigma/Makefile_clipper
+include /sclib/Makefile_clipper
 
-SRCDOSROOT=h:\\cl\\sigma\\fmk\\kam\\razdb\\1g\\
+SRCDOSROOT=c:\\dev\\fmk\\kam\\razdb\\1g\\
 
 PRGS=fin_kam.prg
 

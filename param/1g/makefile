@@ -1,9 +1,9 @@
 VERZIJA=CDX
 MODUL=km_1par
 
-include /cl/sigma/Makefile_clipper
+include /sclib/Makefile_clipper
 
-SRCDOSROOT=h:\\cl\\sigma\\fmk\\kam\\param\\1g\\
+SRCDOSROOT=c:\\dev\\fmk\\kam\\param\\1g\\
 
 PRGS=params.prg
 

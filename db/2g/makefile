@@ -1,9 +1,9 @@
 VERZIJA=CDX
 MODUL=km_2db
 
-include /cl/sigma/Makefile_clipper
+include /sclib/Makefile_clipper
 
-SRCDOSROOT=h:\\cl\\sigma\\fmk\\kam\\db\\2g\\
+SRCDOSROOT=c:\\dev\\fmk\\kam\\db\\2g\\
 
 PRGS=db.prg
 

@@ -1,4 +1,4 @@
-#include "\cl\sigma\fmk\kam\kam.ch"
+#include "\dev\fmk\kam\kam.ch"
 
 /*! \defgroup ini Parametri rada programa - fmk.ini
  *  @{
