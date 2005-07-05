@@ -31,6 +31,7 @@ class TDbKam: public TDB
      	TObject self;
 	string cName;
 	*void dummy();
+	*void skloniSezonu(string cSezona, bool finverse, bool fda, bool fnulirati, bool fRS);
 	*void install(string cKorisn,string cSifra,variant p3,variant p4,variant p5,variant p6,variant p7);
 	*void setgaDBFs();
 	*void obaza(int i);
@@ -46,6 +47,7 @@ CREATE CLASS TDbKam INHERIT TDB
 	EXPORTED:
 	var    self
 	var    cName
+	method skloniSezonu
 	method install	
 	method setgaDBFs	
 	method ostalef	
@@ -65,6 +67,100 @@ method dummy
 return
 *}
 
+
+/*! \fn *void TDBKam::skloniSezonu(string cSezona, bool finverse,bool fda,bool fnulirati,bool fRS)
+ *  \brief formiraj sezonsku bazu podataka
+ *  \param cSezona - 
+ *  \param fInverse - .t. iz sezone u radno, .f. iz radnog u sezonu
+ *  \param fda - ne znam
+ *  \param fnulirati - nulirati tabele
+ *  \param fRS - ne znam
+ */
+
+*void TDBKam::skloniSezonu(string cSezona, bool fInverse,bool fDa,bool fNulirati,bool fRS)
+*{
+
+method skloniSezonu(cSezona, fInverse, fDa, fNulirati, fRS)
+
+save screen to cScr
+if fDa==nil
+	fDA:=.f.
+endif
+if fInverse==nil
+	fInverse:=.f.
+endif
+if fNulirati==nil
+	fNulirati:=.f.
+endif
+if fRS==nil
+	// mrezna radna stanica , sezona je otvorena
+  	fRS:=.f.
+endif
+if fRS // radna stanica
+	aFilesK:={}
+  	aFilesS:={}
+  	aFilesP:={}
+endif
+
+if KLevel<>"0"
+	MsgBeep("Nemate pravo na koristenje ove opcije")
+endif
+cls
+if fRS
+	// mrezna radna stanica
+   	? "Formiranje DBF-ova u privatnom direktoriju, RS ...."
+endif
+?
+if finverse
+	? "Prenos iz sezonskih direktorija u radne podatke"
+else
+ 	? "Prenos radnih podataka u sezonske direktorije"
+endif
+
+?
+
+fNul:=.f.
+
+Skloni(PRIVPATH,"PARAMS.DBF", cSezona, fInverse, fDa, fNul)
+Skloni(PRIVPATH,"KAMPRIPR.DBF",cSezona, fInverse, fDa, fNul)
+Skloni(PRIVPATH,"FMK.INI",cSezona,finverse,fda,fnul)
+
+if fRS
+	// mrezna radna stanica!!! , baci samo privatne direktorije
+ 	?
+ 	?
+ 	?
+ 	Beep(4)
+ 	? "pritisni nesto za nastavak..."
+	restore screen from cScr
+ 	return
+endif
+
+// kumulativ datoteke
+Skloni(KUMPATH,"KAMAT.DBF", cSezona, fInverse, fDa, fNul)
+Skloni(KUMPATH,"FMK.INI",cSezona,finverse,fda,fnul)
+
+if fNulirati
+	fNul:=.t.
+else
+	fNul:=.f.
+endif  
+
+// Sif PATH
+Skloni(SIFPATH,"KS.DBF",cSezona,finverse,fda,fnul)
+Skloni(SIFPATH,"KS2.DBF",cSezona,finverse,fda,fnul)
+Skloni(SIFPATH,"PARTN.DBF",cSezona,finverse,fda,fnul)
+Skloni(SIFPATH,"KONTO.DBF",cSezona,finverse,fda,fnul)
+Skloni(SIFPATH,"FMK.INI",cSezona,finverse,fda,fnul)
+?
+?
+?
+Beep(4)
+? "pritisni nesto za nastavak..."
+
+restore screen from cScr
+return
+*}
 
 /*! \fn *void TDbKam::setgaDbfs()
  *  \brief Setuje matricu gaDbfs 
@@ -116,7 +212,6 @@ if (nArea<>-1)
 endif
 
 CreFMKSvi()
-
 
 // KS.DBF   ***********
 aDbf:={}
@@ -191,8 +286,6 @@ if !file(SIFPATH+"KONTO.dbf")
 endif
 CREATE_INDEX("ID","id",SIFPATH+"KONTO") // konta
 CREATE_INDEX("NAZ","naz",SIFPATH+"KONTO")
-
-
 
 return
 *}
