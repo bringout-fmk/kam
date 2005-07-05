@@ -1,10 +1,12 @@
 #include "\dev\fmk\kam\kam.ch"
 
+
+/*! \fn Unos()
+ *  \brief Centralna funkcija za unos kamata
+ */
 function Unos()
 *{
-
 O_Edit()
-
 ImeKol:={ ;
           {"KONTO",         {|| IdKonto  }, "Idkonto"   }, ;
           {"Partner",       {|| IdPartner}, "IdPartner" }, ;
@@ -15,12 +17,16 @@ ImeKol:={ ;
           {"M1",            {|| M1       }, "M1"        }  ;
         }
 
-Kol:={}; for i:=1 to len(imekol); AADD(Kol,i); next
+Kol:={}
+for i:=1 to LEN(imekol)
+	AADD(Kol,i)
+next
+
 Box(,13,77)
-@ m_x+11,m_y+2 SAY " <c-N>  Nove Stavke      ณ <ENT> Ispravi stavku   ณ <c-T> Brisi Stavku"
-@ m_x+12,m_y+2 SAY " <c-A>  Ispravka Dokum.  ณ <c-P> Stampa svi KL    ณ <a-A> Az. <a-V> Po"
-@ m_x+13,m_y+2 SAY " <c-F9> Bris.p <a-F9> B.kณ <a-P> Stampa pojedinac.ณ <SPACE> KS 1/2    "
-ObjDbedit("PNal",13,77,{|| EdPRIPR()},"","KAMATE Priprema.....อออออ<c-U> Lista uk.dug+kamata", , , , ,3)
+	@ m_x+11,m_y+2 SAY " <c-N>  Nove Stavke      ณ <ENT> Ispravi stavku   ณ <c-T> Brisi Stavku"
+	@ m_x+12,m_y+2 SAY " <c-A>  Ispravka Dokum.  ณ <c-P> Stampa svi KL    ณ <a-A> Az. <a-V> Po"
+	@ m_x+13,m_y+2 SAY " <c-F9> Bris.p <a-F9> B.kณ <a-P> Stampa pojedinac.ณ <SPACE> KS 1/2    "
+	ObjDbedit("PNal",13,77,{|| EdPRIPR()},"","KAMATE Priprema.....อออออ<c-U> Lista uk.dug+kamata", , , , ,3)
 BoxC()
 
 closeret
@@ -28,63 +34,74 @@ return
 *}
 
 
-
+/*! \fn O_Edit()
+ *  \brief Otvori sve tabele potrebne za unos kamata
+ */
 function O_Edit()
 *{
 O_KS
 O_KS2
 O_PARTN
 O_KONTO
-
 O_PRIPR
 O_KAMAT
-
 select PRIPR
-set order to 1; go top
+set order to 1
+go top
+return
 *}
 
 
-
+/*! \fn EditPripr(fNovi)
+ *  \brief Funkcija unosa/ispravke stavke u tabeli pripreme
+ *  \param fNovi - .t. unosi se novi dokument .f. ispravlja se postojeci
+ */
 function EditPRIPR(fNovi)
 *{
-
 if fnovi
-  _IdKonto:=padr("1200",7)
+	_IdKonto:=padr("1200",7)
 endif
 
 set cursor on
 
-   @  m_x+1,m_y+2  SAY "Partner  :" get _IdPartner pict "@!" valid P_Firma(@_idpartner)
-   @  m_x+3,m_y+2  SAY "Broj Veze:" get _BrDok
+@ m_x+1,m_y+2  SAY "Partner  :" get _IdPartner pict "@!" valid P_Firma(@_idpartner)
+@ m_x+3,m_y+2  SAY "Broj Veze:" get _BrDok
+@ m_x+5,m_y+2  SAY "Datum od  " GET _datOd VALID PostojiLi(_idPartner,_brDok,_datOd,fNovi)
+@ m_x+5,col()+2 SAY "do" GET _datDo
+@ m_x+7,m_y+2  SAY "Osnovica  " get _Osnovica pict "999999999.99"
 
-   @  m_x+5,m_y+2  SAY "Datum od  " GET _datOd VALID PostojiLi(_idPartner,_brDok,_datOd,fNovi)
-   @  m_x+5,col()+2 SAY "do" GET _datDo
-
-   @  m_x+7,m_y+2  SAY "Osnovica  " get _Osnovica pict "999999999.99"
-
-   read
-   ESC_RETURN 0
+read
+ESC_RETURN 0
 return 1
 *}
 
-
-
-function PostojiLi(idp,brd,dod,fNovi)
+/*! \fn PostojiLi(idp, brd, dod, fNovi)
+ *  \brief ???
+ *  \param idp
+ *  \param brd
+ *  \param dod
+ *  \param fNovi
+ */
+function PostojiLi(idp, brd, dod, fNovi)
 *{
-LOCAL lVrati:=.t., nRec
-  PushWA()
-  SELECT PRIPR; nRec:=RECNO()
-  GO TOP
-  DO WHILE !EOF()
-    IF idpartner==idp .and. brdok==brd .and. DTOC(datod)==DTOC(dod) .and. ( RECNO()!=nRec .or. fNovi )
-      lVrati:=.f.
-      Msg("Greska! Vec ste unijeli ovaj podatak!",3)
-      EXIT
-    ENDIF
-    SKIP 1
-  ENDDO
-  GO (nRec)
-  PopWA()
+local lVrati:=.t.
+local nRec
+
+PushWA()
+SELECT PRIPR
+nRec:=RECNO()
+GO TOP
+
+DO WHILE !EOF()
+	IF idpartner==idp .and. brdok==brd .and. DTOC(datod)==DTOC(dod) .and. ( RECNO()!=nRec .or. fNovi )
+      		lVrati:=.f.
+      		Msg("Greska! Vec ste unijeli ovaj podatak!",3)
+      		EXIT
+    	ENDIF
+    	SKIP 1
+ENDDO
+GO (nRec)
+PopWA()
 RETURN lVrati
 *}
 
@@ -279,7 +296,10 @@ do case
      return DE_REFRESH
 
    case Ch==K_CTRL_U
-     nArr:=SELECT(); nUD1:=0; nUD2:=0; nUD3:=0
+     nArr:=SELECT()
+     nUD1:=0
+     nUD2:=0
+     nUD3:=0
      IF FILE(PRIVPATH+"POM.DBF")
      USEX (PRIVPATH+"POM") NEW
      SELECT POM
@@ -306,30 +326,28 @@ do case
      ENDIF
      SELECT (nArr)
      return DE_REFRESH
-
+	
    case Ch==K_ALT_P
-     select pripr
-     private nKamMala:=0
-     private nOsnDug:=0
-     private nKamate:=0
-     private cVarObrac:="Z"
-     cIdpartner:=EVAL( (TB:getColumn(2)):Block )
-
-     Box(,2,70)
-       @ m_x+1,m_y+2 SAY "Varijanta (Z-zatezna kamata,P-prosti kamatni racun)" GET cVarObrac valid cVarObrac$"ZP" pict "@!"
-       read
-     BoxC()
+     	select pripr
+     	private nKamMala:=0
+     	private nOsnDug:=0
+     	private nKamate:=0
+     	private cVarObrac:="Z"
+     	cIdpartner:=EVAL( (TB:getColumn(2)):Block )
+	Box(,2,70)
+       		@ m_x+1,m_y+2 SAY "Varijanta (Z-zatezna kamata,P-prosti kamatni racun)" GET cVarObrac valid cVarObrac$"ZP" pict "@!"
+       		read
+     	BoxC()
+        START PRINT CRET
+        
+	if ObracV(cIdPartner, .f.) > nKamMala
+      		ObracV(cidpartner)
+     	endif
      
-     start print cret
-     
-     if ObracV(cidpartner,.f.)>nKamMala
-      ObracV(cidpartner)
-     endif
-     
-     end print
-     
-     select pripr
-     return DE_REFRESH
+     	END PRINT
+        select pripr
+     	go top
+	return DE_REFRESH
 
    case Ch==K_ALT_A
      return DE_REFRESH
