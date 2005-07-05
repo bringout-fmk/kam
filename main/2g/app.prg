@@ -114,18 +114,26 @@ method mMenuStandard
 private opc:={}
 private opcexe:={}
 
-AADD(opc, "1. obracun pojedinacnog dokumenta          ")
+AADD(opc, "1. obracun pojedinacnog dokumenta            ")
 AADD(opcexe, {|| Obrac()})
 AADD(opc, "2. unos ispravka pripreme")
 AADD(opcexe, {|| Unos()})
+AADD(opc, "---------------------------------------")
+AADD(opcexe, {|| nil})
 AADD(opc, "3. prenos fin->kam")
 AADD(opcexe, {|| FinKam()})
-AADD(opc, "4. sifrarnici")
-AADD(opcexe, {|| Sifre()})
-AADD(opc, "5. parametri")
-AADD(opcexe, {|| Pars()})
-AADD(opc,"6. kontrola cjelovitosti kamatnih stopa")
+AADD(opc, "4. kontrola cjelovitosti kamatnih stopa")
 AADD(opcexe, {|| KCKStopa()})
+AADD(opc, "---------------------------------------")
+AADD(opcexe, {|| nil})
+AADD(opc, "8. sifrarnici")
+AADD(opcexe, {|| Sifre()})
+AADD(opc, "9. administracija baze podataka")
+AADD(opcexe, {|| goModul:oDataBase:install()})
+AADD(opc, "---------------------------------------")
+AADD(opcexe, {|| nil})
+AADD(opc, "X. parametri")
+AADD(opcexe, {|| Pars()})
 
 private Izbor:=1
 
@@ -155,33 +163,35 @@ O_PARAMS
 
 SetFmkSGVars()
 
- O_PARAMS
- private cSection:="1",cHistory:=" "; aHistory:={}
- public gDatObr:=date()
- public gFirma:="10"
- public gNFirma:=space(20)  // naziv firme
- public gNW:="D"  // new vawe
- public gDirFin:=""
- public gVlZagl:="", gKumKam:="N"
- Rpar("ff",@gFirma)
- Rpar("fn",@gNFirma)
- Rpar("nw",@gNW)
- Rpar("df",@gDirFin)
- RPar("vz",@gVlZagl)
- RPar("do",@gDatObr)
- RPar("kk",@gKumKam)
+O_PARAMS
+private cSection:="1"
+private cHistory:=" "
+private aHistory:={}
+public gDatObr:=date()
+public gFirma:="10"
+public gNFirma:=space(20)  // naziv firme
+public gNW:="D"  // new vawe
+public gDirFin:=""
+public gVlZagl:="", gKumKam:="N"
+Rpar("ff",@gFirma)
+Rpar("fn",@gNFirma)
+Rpar("nw",@gNW)
+Rpar("df",@gDirFin)
+RPar("vz",@gVlZagl)
+RPar("do",@gDatObr)
+RPar("kk",@gKumKam)
 
 cOdradjeno:="D"
 if file(EXEPATH+'scshell.ini')
         //cBrojLok:=R_IniRead ( 'TekucaLokacija','Broj',  "",EXEPATH+'scshell.INI' )
-        cOdradjeno:=R_IniRead ( 'ShemePromjena',alltrim(strtran(strtran(cDirPriv,"\","_"),":","_")),  "N" ,EXEPATH+'scshell.INI' )
-        R_IniWrite ( 'ShemePromjena',alltrim(strtran(strtran(cDirPriv,"\","_"),":","_")),  "D" ,EXEPATH+'scshell.INI' )
+        cOdradjeno:=R_IniRead('ShemePromjena',alltrim(strtran(strtran(cDirPriv,"\","_"),":","_")),  "N" ,EXEPATH+'scshell.INI' )
+        R_IniWrite('ShemePromjena',alltrim(strtran(strtran(cDirPriv,"\","_"),":","_")),  "D" ,EXEPATH+'scshell.INI' )
 endif
-
- if empty(gDirFin) .OR. cOdradjeno="N"
-   gDirFin:=strtran(cDirRad,"KAM","FIN")+"\"
-   WPar("df",gDirfin)
- endif
+if empty(gDirFin) .OR. cOdradjeno="N"
+	gDirFin:=strtran(cDirRad,"KAM","FIN")+"\"
+   	WPar("df",gDirfin)
+endif
 
 return
 *}
+
