@@ -277,6 +277,8 @@ do case
       cIdPartner:=idpartner
       private nOsnDug:=0
       private nKamate:=0
+      private nSOsnSD:=0
+      altd()
       if ObracV(cidpartner,.f.)>nKamMala
         SELECT POM
         APPEND BLANK
@@ -331,6 +333,7 @@ do case
      	select pripr
      	private nKamMala:=0
      	private nOsnDug:=0
+     	private nSOsnSD:=0
      	private nKamate:=0
      	private cVarObrac:="Z"
      	cIdpartner:=EVAL( (TB:getColumn(2)):Block )
@@ -341,7 +344,7 @@ do case
         START PRINT CRET
         
 	if ObracV(cIdPartner, .f.) > nKamMala
-      		ObracV(cidpartner)
+      		ObracV(cIdPartner)
      	endif
      
      	END PRINT
@@ -359,7 +362,7 @@ return DE_CONT
 
 
 //*******************************
-function ObracV(cidpartner,fprint)
+function ObracV(cIdPartner,fprint)
 //*
 //* ova fja se poziva u dva kruga
 //* u prvom krugu se obracunava
@@ -368,80 +371,85 @@ function ObracV(cidpartner,fprint)
 local nKumKamSD:=0                        // nKumKamSD - ( kumulativ kamate
                                           //               sa denominacijom )
 if fprint==NIL                            // nKumKamBD - ( kumulativ kamate
-  fprint:=.t.                             //               bez denominacije )
+	fprint:=.t.                             //               bez denominacije )
 endif
 
 nGlavn:=2892359.28
 dDatOd:=ctod("01.02.92")
 dDatDo:=ctod("30.09.96")
 
-select ks2; O_KS2; set order to 2
-select ks;  O_KS; set order to 2
-private picDem:="9999999999.99"
+select ks2
+O_KS2
+set order to 2
+select ks
+O_KS
+set order to 2
 
+private picDem:="9999999999.99"
+altd()
 nStr:=0
 IF FPRINT
-
-P_10CPI
-?? padc("- Strana "+str(++nStr,4)+"-",80)
-?
-
-select partn; hseek cidpartner
-
-cPom:=trim(partn->adresa)
-if !empty(partn->telefon)
-  cPom+=", TEL:"+partn->telefon
-endif
-cPom:=padr(cPom,42)
-dDatPom:=gDatObr
-altd()
-Stzaglavlje(gVlZagl,PRIVPATH, ;
+	P_10CPI
+	?? padc("- Strana "+str(++nStr,4)+"-",80)
+	?
+	select partn
+	hseek cIdPartner
+	cPom:=trim(partn->adresa)
+	if !empty(partn->telefon)
+		cPom+=", TEL:"+partn->telefon
+	endif
+	cPom:=padr(cPom,42)
+	dDatPom:=gDatObr
+	altd()
+	Stzaglavlje(gVlZagl,PRIVPATH, ;
              dtoc(gDatObr), ;
-             padr(cidpartner+"-"+partn->naz,42),;
-             padr(mjesto,42),;
+             padr(cIdPartner+"-"+partn->naz,42),;
+             padr(mjesto+" - "+ptt,42),;
              cPom,;
-             str(nOsnDug,12,2) ,;
+             str(nSOsnSD,12,2) ,; //nOsnDug
              str(nKamate,12,2);
             )
+	
+	// resetuj varijablu
+	nSOsnSD:=0
+	
 ENDIF //FPRINT
 
 select pripr
-seek cidpartner
-if fprint
-if prow()>40
-   FF
-   P_10CPI
-   ?? padc("- Strana "+str(++nStr,4)+"-",80)
-   ?
-endif
-P_10CPI
-B_ON
-? space(20),padc("K A M A T N I    L I S T",30)
-B_OFF
+seek cIdPartner
 
-IF gKumKam=="N"
-  P_12CPI
-ELSE
-  P_COND
-ENDIF
-?
-?
-//B_ON
-//? space(45),"Preduzece:",gNFirma
-//B_OFF
+if fprint
+	if prow()>40
+   		FF
+   		P_10CPI
+   		?? padc("- Strana "+str(++nStr,4)+"-",80)
+   		?
+	endif
+	P_10CPI
+	B_ON
+	? space(20),padc("K A M A T N I    L I S T",30)
+	B_OFF
+	IF gKumKam=="N"
+  		P_12CPI
+	ELSE
+  		P_COND
+	ENDIF
+	?
+	?
+	//B_ON
+	//? space(45),"Preduzece:",gNFirma
+	//B_OFF
 endif // fprint
 
-
-
 if fprint
-?
-if cVarObrac=="Z"
-	m:=" ---------- -------- -------- --- ------------- ------------- -------- ------- -------------"+IF(gKumKam=="D"," -------------","")
-else
-	m:=" ---------- -------- -------- --- ------------- ------------- -------- -------------"+IF(gKumKam=="D"," -------------","")
-endif
+	?
+	if cVarObrac=="Z"
+		m:=" ---------- -------- -------- --- ------------- ------------- -------- ------- -------------"+IF(gKumKam=="D"," -------------","")
+	else
+		m:=" ---------- -------- -------- --- ------------- ------------- -------- -------------"+IF(gKumKam=="D"," -------------","")
+	endif
 
-NStrana("1") // samo zaglavlje bez strane
+	NStrana("1") // samo zaglavlje bez strane
 
 endif // fprint
 
@@ -450,147 +458,149 @@ select pripr
 cIdPartner:=idpartner
 
 if !fprint
-nOsnDug:=osndug
+	nOsnDug:=osndug
 endif
-do while !eof() .and. idpartner==cidpartner
+
+do while !eof() .and. idpartner==cIdPartner
 
 fStampajBr:=.t.
 fPrviBD:=.t.
 nKumKamBD:=0
 nKumKamSD:=0
+nSGlavn:=0
 cBrDok:=brdok
 cM1:=m1
 ////************************ broj dokumenta **************************
 nOsnovSD:=pripr->osnovica
 do while !eof() .and. idpartner==cidpartner .and. brdok==cbrdok
-
-
-dDatOd:=pripr->datod
-dDatdo:=pripr->datdo
-nOsnovSD:=pripr->osnovica
-if fprviBD
-  nGlavnBD:=pripr->osnovica
-  fPrviBD:=.f.
-else
-//  nGlavnBD:=pripr->osnovica+nKumKamBD
-  if cVarObrac=="Z"
-	  nGlavnBD:=pripr->osnovica+nKumKamSD
-  else
-	  nGlavnBD:=pripr->osnovica
-  endif
-endif
-nGlavn:=nGlavnBD
-
-if empty(cm1)
- select ks
-else
- select ks2
-endif
-
-// nKumKamSD:=0
-
-seek dtos(dDatOd)
-if dDatOd < DatOd .or. eof()
- skip -1
-endif
-
-//****************** vrti kroz KS *******************************
-do while .t.
-
-ddDatDo:=min(DatDO,dDatDo)
-
-//if dDatOd==ddDatDo
-//  exit                ?????????? da li ovo treba ??????????
-//endif
-if (IzFmkIni("KAM","DodajDan","D",KUMPATH)=="D")
-	nPeriod:= ddDatDo-dDatOd+1
-else
-	nPeriod:= ddDatDo-dDatOd
-endif
-*nPeriod:= ddDatDo-dDatOd  // zeljezara
-if (cVarObrac=="P")
-	if (Prestupna(YEAR(dDatOd)))
-		nExp:=366
+	dDatOd:=pripr->datod
+	dDatdo:=pripr->datdo
+	nOsnovSD:=pripr->osnovica
+	if fprviBD
+  		nGlavnBD:=pripr->osnovica
+  		fPrviBD:=.f.
 	else
-		nExp:=365
+		//  nGlavnBD:=pripr->osnovica+nKumKamBD
+  		if cVarObrac=="Z"
+	  		nGlavnBD:=pripr->osnovica+nKumKamSD
+  		else
+	  		nGlavnBD:=pripr->osnovica
+  		endif
 	endif
-else
-	if tip=="G"
-	 if duz==0
-	  //if year(dDatOD) % 4 == 0
-	  //  nExp:=366
-	  //else
-	   nExp:=365
-	   //endif
-	 else
-	   nExp:=duz
-	 endif
-	elseif tip=="M"
-	 if duz==0
-	  dExp:= "01."
-	  if month(ddDatdo)==12
-	   dExp+="01."+alltrim(str(year(ddDatdo)+1))
-	  else
-	   dExp+=alltrim(str(month(ddDatdo)+1))+"."+alltrim(str(year(ddDatdo)))
-	  endif
-	  // dexp - karakter varijabla
-	  nExp:=day(ctod(dExp)-1)
-	  //nExp:=30
-	 else
-	  nExp:=duz
-	 endif
-	elseif tip=="3"
-	 nExp:=duz
+	
+	nGlavn:=nGlavnBD
+
+	if empty(cm1)
+ 		select ks
+	else
+		select ks2
 	endif
-endif
 
-if den<>0  .and. dDatOd==datod
- if fprint
-   ? "********* Izvrsena Denominacija osnovice sa koeficijentom:",den,"****"
- endif
- nOsnovSD:=round(nOsnovSD*den,2)
- nGlavn:=round(nGlavn*den,2)
- nKumKamSD:=round(nKumKamSD*den,2)
-endif
+	// nKumKamSD:=0
 
-if (cVarObrac=="Z")
-	nKKam  :=((1+stkam/100)^(nPeriod/nExp) - 1.00000)
-	nIznKam:=nKKam*(nGlavn)
-	nIznKam:=round(nIznKam,2)
-else
-	nKStopa:=stkam/100
-	cPom777:=IzFmkIni("KAM","FormulaZaProstuKamatu","nGlavn*nKStopa*nPeriod/nExp",KUMPATH)
-	nIznKam:=&(cPom777)
-	nIznKam:=round(nIznKam,2)
-endif
+	seek dtos(dDatOd)
 
-if fprint
-  if prow()>55
-    FF
-    Nstrana()
-  endif
-  if fstampajbr
-    ? " "+cbrdok+" "
-    fStampajBr:=.f.
-  else
-    ? " "+space(10)+" "
-  endif
-  ?? dDatOd,ddDatDo
-  @ prow(),pcol()+1 SAY nPeriod pict "999"
-  @ prow(),pcol()+1 SAY nOsnovSD pict picdem
+	if dDatOd < DatOd .or. eof()
+ 		skip -1
+	endif
 
-  @ prow(),pcol()+1 SAY nGlavn pict picdem
-  if (cVarObrac=="Z")
-	  @ prow(),pcol()+1 SAY tip
-	  @ prow(),pcol()+1 SAY stkam pict "999.99"
-	  @ prow(),pcol()+1 SAY nKKam*100 pict "9999.99"
-  else
-	  @ prow(),pcol()+1 SAY stkam pict "999.99"
-  endif
-  nCol1:=pcol()+1
-  @ prow(),pcol()+1 SAY nIznKam pict picdem
-endif //fprint
+	//****************** vrti kroz KS *******************************
+	do while .t.
+		ddDatDo:=min(DatDO,dDatDo)
+		//if dDatOd==ddDatDo
+		//  exit                ?????????? da li ovo treba ??????????
+		//endif
+		if (IzFmkIni("KAM","DodajDan","D",KUMPATH)=="D")
+			nPeriod:= ddDatDo-dDatOd+1
+		else
+			nPeriod:= ddDatDo-dDatOd
+		endif
+		*nPeriod:= ddDatDo-dDatOd  // zeljezara
+		if (cVarObrac=="P")
+			if (Prestupna(YEAR(dDatOd)))
+				nExp:=366
+			else
+				nExp:=365
+			endif
+		else
+			if tip=="G"
+	 			if duz==0
+	  				//if year(dDatOD) % 4 == 0
+	 				//  nExp:=366
+	  				//else
+	   				nExp:=365
+	   				//endif
+	 			else
+	   				nExp:=duz
+	 			endif
+			elseif tip=="M"
+	 			if duz==0
+	  				dExp:= "01."
+	  				if month(ddDatdo)==12
+	   					dExp+="01."+alltrim(str(year(ddDatdo)+1))
+	  				else
+	   					dExp+=alltrim(str(month(ddDatdo)+1))+"."+alltrim(str(year(ddDatdo)))
+	  				endif
+	  				// dexp - karakter varijabla
+	  				nExp:=day(ctod(dExp)-1)
+	  				//nExp:=30
+	 			else
+	  				nExp:=duz
+	 			endif
+			elseif tip=="3"
+	 			nExp:=duz
+			endif
+		endif
 
+		if den<>0  .and. dDatOd==datod
+ 			if fprint
+   				? "********* Izvrsena Denominacija osnovice sa koeficijentom:",den,"****"
+ 			endif
+ 			nOsnovSD:=round(nOsnovSD*den,2)
+ 			nGlavn:=round(nGlavn*den,2)
+ 			nKumKamSD:=round(nKumKamSD*den,2)
+		endif
+
+		if (cVarObrac=="Z")
+			nKKam  :=((1+stkam/100)^(nPeriod/nExp) - 1.00000)
+			nIznKam:=nKKam*(nGlavn)
+			nIznKam:=round(nIznKam,2)
+		else
+			nKStopa:=stkam/100
+			cPom777:=IzFmkIni("KAM","FormulaZaProstuKamatu","nGlavn*nKStopa*nPeriod/nExp",KUMPATH)
+			nIznKam:=&(cPom777)
+			nIznKam:=round(nIznKam,2)
+		endif
+
+		if fprint
+  			if prow()>55
+   				FF
+    				Nstrana()
+  			endif
+  			if fstampajbr
+    				? " "+cbrdok+" "
+    				fStampajBr:=.f.
+  			else
+    				? " "+space(10)+" "
+  			endif
+  			?? dDatOd,ddDatDo
+  			@ prow(),pcol()+1 SAY nPeriod pict "999"
+  			@ prow(),pcol()+1 SAY nOsnovSD pict picdem
+			@ prow(),pcol()+1 SAY nGlavn pict picdem
+  			if (cVarObrac=="Z")
+	  			@ prow(),pcol()+1 SAY tip
+	  			@ prow(),pcol()+1 SAY stkam pict "999.99"
+	  			@ prow(),pcol()+1 SAY nKKam*100 pict "9999.99"
+  			else
+	  			@ prow(),pcol()+1 SAY stkam pict "999.99"
+  			endif
+  			nCol1:=pcol()+1
+  			@ prow(),pcol()+1 SAY nIznKam pict picdem
+		endif //fprint
+
+		nSOsnSD += nOsnovSD
+		nSGlavn += nGlavn
+		
 if (cVarObrac=="Z")
 	nGlavnBD+=nIznKam
 endif
@@ -647,21 +657,26 @@ nSKumKam+=nKumKamSD
 
 select pripr
 enddo // cidpartner
+
 if fprint
-if prow()>54
-  FF
-  Nstrana()
-endif
+	if prow()>54
+  		FF
+  		NStrana()
+	endif
+
 ? m
-? " SVEUKUPNO KAMATA NA DAN",gDatObr,":"
+? " SVEUKUPNO KAMATA NA DAN " + DTOC(gDatObr) + ":"
+@ prow(),pcol() SAY nSOsnSD pict picdem
+@ prow(),pcol()+1 SAY nSGlavn pict picdem
 @ prow(),ncol1  SAY nSKumKam pict picdem
 ? m
 
 P_10CPI
+
 if prow()<62+gPStranica
- for i:=1 to 62+gPStranica-prow()
-   ?
- next
+	for i:=1 to 62+gPStranica-prow()
+   		?
+ 	next
 endif
 ?  PADC("     Obradio:                                 Direktor:    ",80)
 ?
@@ -672,8 +687,9 @@ FF
 endif // fprint
 
 if !fprint
-nKamate:=nSKumKam
+	nKamate:=nSKumKam
 endif
+
 return nSKumKam
 *}
 
