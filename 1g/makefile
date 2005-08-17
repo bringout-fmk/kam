@@ -1,5 +1,6 @@
 VERZIJA=CDX
 MODUL=KAM
+MODVER=1.w.0.1.6
 
 PRGS=/dev/fmk/kam/main/1g/e.prg
 CS=
@@ -34,10 +35,10 @@ mod: $(OBJS)
 	cp e.exe $(EXEDEST)/$(MODUL).EXE
 
 zip:
-	rm -f /z/fmk/$(MODUL).zip
-	/sclib/zip.sh z:\\fmk\\$(MODUL).zip ..\\chs\\\*.chs \\dev\\fmk\\svi\\\*.chs  $(EXEDOSDEST)\\$(MODUL).EXE 
+	/sclib/zip.sh h:\\cs\\fmk\\binary\\$(MODUL).zip ..\\chs\\\*.chs \\dev\\fmk\\svi\\\*.chs  $(EXEDOSDEST)\\$(MODUL).EXE 
 
-
+commit:
+	/sclib/commit.sh $(MODVER) h:\\cs\\fmk\\binary\\$(MODUL).zip
 
 clean:
 	rm -f *.obj *.OBJ
