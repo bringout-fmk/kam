@@ -60,7 +60,7 @@ endif
 
 set order to 3
 seek gFirma+cIdKonto
-
+altd()
 do while !eof() .and. idkonto==cIdKonto .and. idfirma=gFirma
 	cIdPartner:=idpartner
    	nOsnDug:=0  // osnovni dug
