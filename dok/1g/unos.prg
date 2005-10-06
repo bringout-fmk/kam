@@ -406,12 +406,12 @@ IF FPRINT
              padr(cIdPartner+"-"+partn->naz,42),;
              padr(mjesto+" - "+ptt,42),;
              cPom,;
-             str(nSOsnSD,12,2) ,; //nOsnDug
+             str(nOsnDug,12,2) ,; //nOsnDug
              str(nKamate,12,2);
             )
 	
 	// resetuj varijablu
-	nSOsnSD:=0
+	//nSOsnSD:=0
 	
 ENDIF //FPRINT
 
@@ -467,7 +467,7 @@ fStampajBr:=.t.
 fPrviBD:=.t.
 nKumKamBD:=0
 nKumKamSD:=0
-nSGlavn:=0
+//nSGlavn:=0
 cBrDok:=brdok
 cM1:=m1
 ////************************ broj dokumenta **************************
@@ -598,8 +598,8 @@ do while !eof() .and. idpartner==cidpartner .and. brdok==cbrdok
   			@ prow(),pcol()+1 SAY nIznKam pict picdem
 		endif //fprint
 
-		nSOsnSD += nOsnovSD
-		nSGlavn += nGlavn
+		//nSOsnSD += nOsnovSD
+		//nSGlavn += nGlavn
 		
 if (cVarObrac=="Z")
 	nGlavnBD+=nIznKam
@@ -646,7 +646,7 @@ if fprint
   ? m
   ? " UKUPNO ZA",cbrdok
 //  @ prow(),nCol1 SAY nKumKamBD pict picdem
-  @ prow(),nCol1 SAY nKumKamSD pict picdem
+  @ prow(),nCol1 SAY nKumKamBD pict picdem
 
   ? " UKUPNO NA DAN",gDatObr,":"
   @ prow(),nCol1 SAY nKumKamSD pict picdem
@@ -666,8 +666,8 @@ if fprint
 
 ? m
 ? " SVEUKUPNO KAMATA NA DAN " + DTOC(gDatObr) + ":"
-@ prow(),pcol() SAY nSOsnSD pict picdem
-@ prow(),pcol()+1 SAY nSGlavn pict picdem
+@ prow(),pcol() SAY nOsnDug pict picdem
+//@ prow(),pcol()+1 SAY nGlavn pict picdem
 @ prow(),ncol1  SAY nSKumKam pict picdem
 ? m
 
