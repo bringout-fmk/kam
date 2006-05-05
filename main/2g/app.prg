@@ -81,6 +81,8 @@ method mMenu()
 private Izbor
 private lPodBugom
 
+say_fmk_ver()
+
 goModul:oDataBase:setSigmaBD(IzFmkIni("Svi","SigmaBD","c:"+SLASH+"sigma",EXEPATH))
 
 SETKEY(K_SH_F1,{|| Calc()})
