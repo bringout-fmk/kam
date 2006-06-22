@@ -1,11 +1,10 @@
 VERZIJA=CDX
 MODUL=KAM
 
-PRGS=/dev/fmk/kam/main/1g/e.prg
+PRGS=e.prg
+EXE_PRGS=e.prg
 CS=
 ASMS=
-
-include /sclib/Makefile_clipper
 
 FMK_LIBS=fmk_roba.lib fmk_svi.lib fmk_pi.lib fmk_evn.lib fmk_sec.lib fmk_rab.lib fmk_lok.lib
 
@@ -13,40 +12,12 @@ SCLIB_LIBS=sc1g_arh.lib sc1g_ba.lib sc1g_cui.lib sc1g_db.lib sc1g_os.lib sc1g_os
 
 MODUL_LIBS=km_1db.lib km_2db.lib km_1dok.lib km_1ma.lib km_2ma.lib km_1par.lib km_1rpt.lib km_1sif.lib km_1raz.lib 
 
-PREF2=lib $(LIB_DOS_DEST)
-FMKLIBCMD=$(addprefix $(PREF2), $(SCLIB_LIBS) $(FMK_LIBS) $(MODUL_LIBS) )
+include $(SC_BUILD_HOME_DIR)/sclib/Makefile_clipper
+
+LIBEXE:=@echo pokrenute make exe  !
+CPLIB:=@echo pokrenuti make exe !
+RMLIB:=@echo pokrenuti make exe !
+e.obj : $(SC_BUILD_HOME_DIR)/sclib/sc.ch $(SC_BUILD_HOME_DIR)/sclib/std_cdx.ch ../kam.ch
 
 
-OBJS=$(OBJPRGS) $(OBJCS) $(OBJASMS)
-
-all:    cleaneobj mod 
-
-cleaneobj:
-	rm -f /dev/fmk/kam/main/1g/e.obj
-	
-mod: $(OBJS)
-	echo Prilikom kompilacije obj se napravi u tekucem direktoriju
-	echo a blinker opet trazi obj fajl u orig direktoriju
-	cp e.obj /dev/fmk/kam/main/1g/
-	/sclib/form_blinker_lnk.sh $(LINKCMD)
-	/sclib/form_blinker_lnk_2.sh $(FMKLIBCMD)
-	$(LINKEREXE) @_bl_.lnk BEGINAREA  @_bl_2_.lnk ENDAREA $(DEBUGLINK) @H:\\CLIPPER\\$(VERZIJA)\\BL.LNK output e.exe
-	cp e.exe $(EXEDEST)/$(MODUL).EXE
-
-zip:
-	/sclib/zip.sh h:\\cs\\fmk\\binary\\$(MODUL).zip ..\\chs\\\*.chs \\dev\\fmk\\af\\cl-af\\svi\\\*.chs  $(EXEDOSDEST)\\$(MODUL).EXE 
-
-commit:
-	/sclib/commit.sh $(MODUL) h:\\cs\\fmk\\binary\\$(MODUL).zip
-	/sclib/commit.sh $(MODUL) h:\\cs\\fmk\\binary\\sfx\\$(MODUL).exe
-
-clean:
-	rm -f *.obj *.OBJ
-	rm -f $(OBJS) I$(MODULH).OBJ *.bak *.BAK
-
-7exe:
-	/sclib/7exe.sh h:\\cs\\fmk\\binary\\sfx\\$(MODUL).exe ..\\chs\\\*.chs \\dev\\fmk\\af\\cl-af\\svi\\\*.chs  $(EXEDOSDEST)\\$(MODUL).EXE 
-
-
-sfx:
-	/cygdrive/p/bat/SFXMA.BAT kam
+lib: exe

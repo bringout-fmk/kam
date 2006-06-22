@@ -55,13 +55,13 @@ endif
 private picDem:="9999999999999.99"
 
 START PRINT CRET
-
+?
 P_10CPI
 ? space(45),"SIGMA-COM: K A M A T E"
 ?
 ?
 B_ON
-? space(45),"Preduzece:",gNFirma
+? space(45),"Preduzece:", gNFirma
 B_OFF
 ?
 ? "Partner: _____________________________________"

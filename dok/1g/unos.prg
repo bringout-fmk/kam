@@ -273,12 +273,12 @@ do case
        read
      BoxC()
      start print cret
+     ?
      do while !eof()
       cIdPartner:=idpartner
       private nOsnDug:=0
       private nKamate:=0
       private nSOsnSD:=0
-      altd()
       if ObracV(cidpartner,.f.)>nKamMala
         SELECT POM
         APPEND BLANK
@@ -386,9 +386,9 @@ O_KS
 set order to 2
 
 private picDem:="9999999999.99"
-altd()
 nStr:=0
 IF FPRINT
+        ?
 	P_10CPI
 	?? padc("- Strana "+str(++nStr,4)+"-",80)
 	?
@@ -413,15 +413,16 @@ IF FPRINT
 	// resetuj varijablu
 	//nSOsnSD:=0
 	
-ENDIF //FPRINT
+ENDIF 
 
 select pripr
 seek cIdPartner
 
-if fprint
+if fPrint
 	if prow()>40
    		FF
-   		P_10CPI
+   		? 
+		P_10CPI
    		?? padc("- Strana "+str(++nStr,4)+"-",80)
    		?
 	endif
@@ -703,6 +704,7 @@ if ctip==NIL
 endif
 
 if cTip==""
+   ?
    P_10CPI
    ?? padc("- Strana "+str(++nStr,4)+"-",80)
    ?
