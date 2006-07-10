@@ -10,7 +10,7 @@ local cNaredni
 
 nRataIznos := 313
 nDanUplate := 15
-cNaredni := "N"
+cNaredni := "T"
 
 Box(, 3, 70)
 
