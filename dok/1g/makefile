@@ -4,7 +4,7 @@ MODUL=km_1dok
 
 SRCDOSROOT=c:\\dev\\fmk\\kam\\dok\\1g\\
 
-PRGS=unos.prg kckstopa.prg
+PRGS=unos.prg kckstopa.prg util.prg
 
 CS=
 ASMS=

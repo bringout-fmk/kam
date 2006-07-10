@@ -5,7 +5,6 @@
  *  \brief Centralna funkcija za unos kamata
  */
 function Unos()
-*{
 O_Edit()
 ImeKol:={ ;
           {"KONTO",         {|| IdKonto  }, "Idkonto"   }, ;
@@ -31,14 +30,12 @@ BoxC()
 
 closeret
 return
-*}
 
 
 /*! \fn O_Edit()
  *  \brief Otvori sve tabele potrebne za unos kamata
  */
 function O_Edit()
-*{
 O_KS
 O_KS2
 O_PARTN
@@ -49,7 +46,6 @@ select PRIPR
 set order to 1
 go top
 return
-*}
 
 
 /*! \fn EditPripr(fNovi)
@@ -83,7 +79,6 @@ return 1
  *  \param fNovi
  */
 function PostojiLi(idp, brd, dod, fNovi)
-*{
 local lVrati:=.t.
 local nRec
 
@@ -103,7 +98,6 @@ ENDDO
 GO (nRec)
 PopWA()
 RETURN lVrati
-*}
 
 
 //****************************************************************
@@ -163,6 +157,10 @@ do case
      return DE_REFRESH
     endif
 
+   case Ch==K_CTRL_K
+   	g_mj_uplate()
+	RETURN DE_CONT
+
    case Ch==K_CTRL_A
         PushWA()
         select PRIPR
@@ -170,7 +168,9 @@ do case
         Box("anal",13,75,.f.,"Ispravka stavki dokumenta")
         nDug:=0; nPot:=0
         do while !eof()
-           skip; nTR2:=RECNO(); skip-1
+           skip
+	   nTR2:=RECNO()
+	   skip-1
            Scatter()
            @ m_x+1,m_y+1 CLEAR to m_x+12,m_y+74
            if EditPRIPR(.f.)==0
