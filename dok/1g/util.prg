@@ -12,15 +12,15 @@ nRataIznos := 313
 nDanUplate := 15
 cNaredni := "N"
 
-Box()
+Box(, 3, 70)
 
 @ m_x+1, m_y+2 SAY "Iznos mjesecne rate ?" GET nRataIznos ;
-   PICT gPicDEM
+   PICT "99999.99"
 
 @ m_x+2, m_y+2 SAY "Uplata na dan u mjesecu ?"  GET nDanUplate ;
   PICT "99"
 
-@ m_x+2, m_y+2 SAY "Uplata pocinje od tekuceg od ovog (T) ili narednog (N) mjeseca ?"  GET cNaredni  ;
+@ m_x+3, m_y+2 SAY "Uplata pocinje od tekuceg od ovog (T) ili narednog (N) mjeseca ?"  GET cNaredni  ;
   PICT "@!" ;
   VALID cNaredni $ "TN"
 READ
@@ -64,6 +64,8 @@ do while !eof()
    add_month(@nMonth, @nYear)
    _datDo := d_m_y(nDanUplate, nMonth, nYear)
 
+   Gather()
+
    // glavnica je potrosena
    if ROUND(nOsn, 2) <= 0
    	exit
@@ -91,9 +93,9 @@ static function d_m_y(nDay, nMonth, nYear)
 local cPom
 
 cPom := ""
-cPom += PADL(ALLTRIM(STR(nYear), 4, "0")
-cPom += PADL(ALLTRIM(STR(nMonth), 2, "0")
-cPom += PADL(ALLTRIM(STR(nDAY), 2, "0")
+cPom += PADL(ALLTRIM(STR(nYear)), 4, "0")
+cPom += PADL(ALLTRIM(STR(nMonth)), 2, "0")
+cPom += PADL(ALLTRIM(STR(nDay)), 2, "0")
 
 return STOD(cPom)
 
