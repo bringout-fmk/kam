@@ -280,15 +280,16 @@ do case
       private nOsnDug:=0
       private nKamate:=0
       private nSOsnSD:=0
-      private nPDV:=0
-      private nPdvUk:=0
+      private nPdv:=0
+      private nPdvTotal:=0
+      private nKamTotal:=0
       if ObracV(cidpartner,.f.)>nKamMala
         SELECT POM
         APPEND BLANK
         REPLACE IDPARTNER WITH cIdPartner ,;
                 OSNDUG    WITH nOsnDug    ,;
                 KAMATE    WITH nKamate    ,;
-		PDV       WITH nPDV
+		PDV       WITH nPdvTotal
         SELECT PRIPR
         ObracV(cidpartner,.t.)
       endif
@@ -412,7 +413,8 @@ IF FPRINT
              cPom,;
              str(nOsnDug,12,2) ,; //nOsnDug
              str(nKamate,12,2) ,;
-	     IF(gPdvObr=="D",str(nPdvUk,12,2), nil) ;
+	     IF(gPdvObr=="D",str(nPdvTotal,12,2), nil) , ;
+	     IF(gPdvObr=="D",str(nKamate + nPdvTotal,12,2), nil) ;
             )
 	
 	// resetuj varijablu
@@ -455,10 +457,6 @@ if fprint
 		m:=" ---------- -------- -------- --- ------------- ------------- -------- -------------"+IF(gKumKam=="D"," -------------","")
 	endif
 
-	if gPdvObr=="D"
-		m+= " " + REPLICATE("-", LEN(picdem))
-	endif
-
 	NStrana("1") // samo zaglavlje bez strane
 
 endif // fprint
@@ -478,7 +476,6 @@ fPrviBD:=.t.
 nKumKamBD:=0
 nKumKamSD:=0
 nPdvStopa:=17
-nPdvUkupno:=0
 //nSGlavn:=0
 cBrDok:=brdok
 cM1:=m1
@@ -585,7 +582,8 @@ do while !eof() .and. idpartner==cidpartner .and. brdok==cbrdok
 		endif
 
 		nPdv := nIznKam * ( nPdvStopa / 100 )
-
+		nPdvTotal += nPdv
+		
 		if fprint
   			if prow()>55
    				FF
@@ -611,10 +609,6 @@ do while !eof() .and. idpartner==cidpartner .and. brdok==cbrdok
   			nCol1:=pcol()+1
   			@ prow(),pcol()+1 SAY nIznKam pict picdem
 
-			if gPdvObr=="D"
-  				@ prow(),pcol()+1 SAY nPdv pict picdem
-			endif
-			
 		endif //fprint
 
 		//nSOsnSD += nOsnovSD
@@ -623,9 +617,10 @@ do while !eof() .and. idpartner==cidpartner .and. brdok==cbrdok
 if (cVarObrac=="Z")
 	nGlavnBD+=nIznKam
 endif
-nKumKamBD+=nIznKam
 
+nKumKamBD+=nIznKam
 nKumKamSD+=nIznKam
+
 if (cVarObrac=="Z")
 	nGlavn+=nIznKam
 endif
@@ -672,8 +667,7 @@ if fprint
   ? m
 endif
 
-nSKumKam+=nKumKamSD
-nPdvUk += nPdv
+nSKumKam += nKumKamSD
 
 select pripr
 enddo // cidpartner
@@ -736,11 +730,11 @@ if ctip=="1" .or. cTip=""
    ENDIF
    ? m
    if cVarObrac=="Z"
-   	? "   Broj          Period      dana     ostatak       kamatna   Tip kam  Konform.    Iznos    "+IF(gKumKam=="D","   kumulativ   ","") + IF(gPdvObr="D", "  PDV(17%) ", "")
+   	? "   Broj          Period      dana     ostatak       kamatna   Tip kam  Konform.    Iznos    "+IF(gKumKam=="D","   kumulativ   ","")
    	? "  racuna                              racuna       osnovica   i stopa   koef       kamate   "+IF(gKumKam=="D","    kamate     ","")
    else
-   	? "   Broj          Period      dana     ostatak       kamatna    Stopa       Iznos    "+IF(gKumKam=="D","   kumulativ   ","") + IF(gPdvObr="D", "  PDV 17%", "")
-   	? "  racuna                              racuna       osnovica                kamate   "+IF(gKumKam=="D","    kamate     ","")
+   	? "   Broj          Period      dana     ostatak       kamatna    Stopa       Iznos    "+IF(gKumKam=="D","   kumulativ   ","") 
+	? "  racuna                              racuna       osnovica                kamate   "+IF(gKumKam=="D","    kamate     ","")
    endif
    ? m
 endif
