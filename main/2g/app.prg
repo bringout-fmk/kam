@@ -174,7 +174,9 @@ public gFirma:="10"
 public gNFirma:=space(20)  // naziv firme
 public gNW:="D"  // new vawe
 public gDirFin:=""
-public gVlZagl:="", gKumKam:="N"
+public gVlZagl:=""
+public gKumKam:="N"
+public gPdvObr:="N"
 Rpar("ff",@gFirma)
 Rpar("fn",@gNFirma)
 Rpar("nw",@gNW)
@@ -182,6 +184,7 @@ Rpar("df",@gDirFin)
 RPar("vz",@gVlZagl)
 RPar("do",@gDatObr)
 RPar("kk",@gKumKam)
+RPar("pd",@gPdvObr)
 
 cOdradjeno:="D"
 if file(EXEPATH+'scshell.ini')

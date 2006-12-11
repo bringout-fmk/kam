@@ -10,7 +10,7 @@ Rpar("nw",@gNW)
 RPar("vz",@gVlZagl)
 RPar("kk",@gKumKam)
 RPar("do",@gDatObr)
-
+RPar("pd",@gPdvObr)
 
 gDirFin:=padr(gDirFin,25)
 gVlZagl:=padr(gVlZagl,11)
@@ -26,6 +26,8 @@ Box(,14,60)
 
  @ m_x+7,m_y+2 SAY "Prikazivati kolonu 'kumulativ kamate' (D/N) ?" GET gKumKam VALID gKumKam$"DN" PICT "@!"
 
+ @ m_x+10,m_y+2 SAY "Dodaj PDV na obracun kamate (D/N) ?" GET gPdvObr VALID gPdvObr$"DN" PICT "@!"
+ 
  @ m_x+14,m_y+2 SAY "Novi korisnicki interfejs D/N" GET gNW valid gNW $ "DN" pict "@!"
  read
 BoxC()
@@ -41,6 +43,7 @@ if lastkey()<>K_ESC
  WPar("vz",gVlZagl)
  WPar("kk",gKumKam)
  WPar("do",gDatObr)
+ WPar("pd",gPdvObr)
  select params; use
 endif
 closeret
