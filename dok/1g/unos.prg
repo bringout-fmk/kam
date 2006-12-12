@@ -373,10 +373,14 @@ function ObracV(cIdPartner,fprint)
 //* u prvom krugu se obracunava
 //* nOsnDug, nKamate
 //*******************************
-local nKumKamSD:=0                        // nKumKamSD - ( kumulativ kamate
-                                          //               sa denominacijom )
-if fprint==NIL                            // nKumKamBD - ( kumulativ kamate
-	fprint:=.t.                             //               bez denominacije )
+local nKumKamSD:=0   
+// nKumKamSD - ( kumulativ kamate sa denominacijom )
+// nKumKamBD - ( kumulativ kamate bez denominacije )
+local cTxtPdv
+local cTxtUkupno
+
+if fprint==NIL                            
+	fprint:=.t.
 endif
 
 nGlavn:=2892359.28
@@ -393,7 +397,29 @@ set order to 2
 private picDem:="9999999999.99"
 nStr:=0
 IF FPRINT
-        ?
+        
+	nPdvTotal := nKamate * (17 / 100)
+	
+	if gPdvObr == "D"
+		
+		cTxtPdv := "PDV (17%)"
+		cTxtPdv += " "
+		cTxtPdv += REPLICATE(".", 44)
+		cTxtPdv += str(nPdvTotal, 12, 2)
+		cTxtPdv += " KM"
+		
+		cTxtUkupno := "Ukupno sa PDV"
+		cTxtUkupno += " "
+		cTxtUkupno += REPLICATE(".", 40)
+		cTxtUkupno += str(nKamate + nPdvTotal, 12, 2)
+		cTxtUkupno += " KM"
+		
+	else
+		cTxtPdv := ""
+		cTxtUkupno := ""
+	endif
+	
+	?
 	P_10CPI
 	?? padc("- Strana "+str(++nStr,4)+"-",80)
 	?
@@ -405,7 +431,7 @@ IF FPRINT
 	endif
 	cPom:=padr(cPom,42)
 	dDatPom:=gDatObr
-	altd()
+
 	Stzaglavlje(gVlZagl,PRIVPATH, ;
              dtoc(gDatObr), ;
              padr(cIdPartner+"-"+partn->naz,42),;
@@ -413,9 +439,8 @@ IF FPRINT
              cPom,;
              str(nOsnDug,12,2) ,; //nOsnDug
              str(nKamate,12,2) ,;
-	     IF(gPdvObr=="D",str(nPdvTotal,12,2), nil) , ;
-	     IF(gPdvObr=="D",str(nKamate + nPdvTotal,12,2), nil) ;
-            )
+	     cTxtPdv , ;
+	     cTxtUkupno )
 	
 	// resetuj varijablu
 	//nSOsnSD:=0
@@ -475,7 +500,6 @@ fStampajBr:=.t.
 fPrviBD:=.t.
 nKumKamBD:=0
 nKumKamSD:=0
-nPdvStopa:=17
 //nSGlavn:=0
 cBrDok:=brdok
 cM1:=m1
@@ -581,9 +605,6 @@ do while !eof() .and. idpartner==cidpartner .and. brdok==cbrdok
 			nIznKam:=round(nIznKam,2)
 		endif
 
-		nPdv := nIznKam * ( nPdvStopa / 100 )
-		nPdvTotal += nPdv
-		
 		if fprint
   			if prow()>55
    				FF

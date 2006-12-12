@@ -20,3 +20,5 @@ cleanall:
 	cd razdb/1g; make clean
 
 
+kam:	cleanall	liball
+
