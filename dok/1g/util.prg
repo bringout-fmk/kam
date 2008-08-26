@@ -1,4 +1,4 @@
-#include "\dev\fmk\kam\kam.ch"
+#include "kam.ch"
 
 // -----------------------------------
 // ctrl-K - generisi mjesecne uplate

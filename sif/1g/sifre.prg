@@ -1,4 +1,4 @@
-#include "\dev\fmk\kam\kam.ch"
+#include "kam.ch"
 
 function Sifre()
 local Izb:=1

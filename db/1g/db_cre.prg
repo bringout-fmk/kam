@@ -1,6 +1,4 @@
-#include "\dev\fmk\kam\kam.ch"
+#include "kam.ch"
  
 function dummy()
-*{
 return 
-*}

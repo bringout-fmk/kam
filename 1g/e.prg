@@ -1,4 +1,4 @@
-#include "\dev\fmk\kam\kam.ch"
+#include "kam.ch"
 
 #ifndef CPP
 EXTERNAL RIGHT,LEFT,FIELDPOS

@@ -1,13 +1,10 @@
 VERZIJA=CDX
 MODUL=km_2db
 
-
-SRCDOSROOT=c:\\dev\\fmk\\kam\\db\\2g\\
+SRCDOSROOT=$(BASEDOS)\\fmk\\kam\\db\\2g\\
 
 PRGS=db.prg
-
 CS=
 ASMS=
 
-
-include $(SC_BUILD_HOME_DIR)/sclib/Makefile_clipper
+include ../../../fmk_lib/Makefile_clipper
