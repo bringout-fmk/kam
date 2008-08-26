@@ -2,6 +2,7 @@
 	#include "sc.ch"
 #endif
 
+
 #define D_KAM_VERZIJA "02.03"
 #define D_KAM_PERIOD '06.96-12.12.06'
 
