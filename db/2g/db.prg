@@ -184,9 +184,7 @@ public gaDbfs := {;
 { F_KAMPRIPR  ,"PRIPR"   , P_PRIVPATH    },;
 { F_KAMAT  ,"KAMAT"   , P_KUMPATH     },;
 { F_KS     ,"KS"      , P_SIFPATH     },;
-{ F_KS2    ,"KS2"     , P_SIFPATH     },;
-{ F_PARTN  ,"PARTN"   , P_SIFPATH     },;
-{ F_KONTO  ,"KONTO"   , P_SIFPATH     };
+{ F_KS2    ,"KS2"     , P_SIFPATH     };
 }
 
 return
@@ -266,37 +264,6 @@ if !file(KUMPATH+'KAMAT.dbf')
 endif
 CREATE_INDEX("1","IDPARTNER+BRDOK+dtos(datod)",KUMPATH+"KAMAT")
 
-if !file(SIFPATH+"PARTN.dbf")
-        *********  PARTN.DBF   ***********
-        aDbf:={}
-        AADD(aDBf,{ 'ID'                  , 'C' ,   6 ,  0 })
-        AADD(aDBf,{ 'NAZ'                 , 'C' ,  25 ,  0 })
-        AADD(aDBf,{ 'NAZ2'                , 'C' ,  25 ,  0 })
-        AADD(aDBf,{ 'PTT'                 , 'C' ,   5 ,  0 })
-        AADD(aDBf,{ 'MJESTO'              , 'C' ,  16 ,  0 })
-        AADD(aDBf,{ 'ADRESA'              , 'C' ,  24 ,  0 })
-        AADD(aDBf,{ 'ZIROR'               , 'C' ,  22 ,  0 })
-        AADD(aDBf,{ 'DZIROR'              , 'C' ,  22 ,  0 })
-        AADD(aDBf,{ 'TELEFON'             , 'C' ,  12 ,  0 })
-        AADD(aDBf,{ 'FAX'                 , 'C' ,  12 ,  0 })
-        AADD(aDBf,{ 'MOBTEL'              , 'C' ,  20 ,  0 })
-        DBCREATE2(SIFPATH+'PARTN.DBF',aDbf)
-endif
-
-CREATE_INDEX("ID","id",SIFPATH+"PARTN") // firme
-CREATE_INDEX("NAZ","naz",SIFPATH+"PARTN")
-
-
-if !file(SIFPATH+"KONTO.dbf")
-   *********  KONTO.DBF   ***********
-   aDbf:={}
-   AADD(aDBf,{ 'ID'                  , 'C' ,   7 ,  0 })
-   AADD(aDBf,{ 'NAZ'                 , 'C' ,  57 ,  0 })
-   DBCREATE2(SIFPATH+'KONTO.DBF',aDbf)
-endif
-CREATE_INDEX("ID","id",SIFPATH+"KONTO") // konta
-CREATE_INDEX("NAZ","naz",SIFPATH+"KONTO")
-
 return
 *}
 
@@ -322,11 +289,7 @@ if i==F_PARAMS .or. i==F_KAMPRIPR
 	lIdiDalje:=.t.
 endif
 
-if i==F_KAMAT .or. i==F_KS .or. i==F_KS2 .or. i==F_PARTN 
-	lIdiDalje:=.t.
-endif
-
-if i==F_KONTO
+if i==F_KAMAT .or. i==F_KS .or. i==F_KS2 
 	lIdiDalje:=.t.
 endif
 
@@ -395,7 +358,7 @@ BoxC()
 
 aPriv:= { }
 aKum:= { }
-aSif:={ F_PARTN, F_KONTO, F_KS, F_KS2 , F_KAMAT }
+aSif:={ F_KS, F_KS2 , F_KAMAT }
 
 if cSif=="N"
 	aSif:={}
