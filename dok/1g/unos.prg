@@ -330,7 +330,7 @@ do case
      ? "      SIFRA I NAZIV KUPCA            DUG         KAMATA       UKUPNO   "
      ? "-------------------------------- ------------ ------------ ------------"
      DO WHILE !EOF()
-       ? IDPARTNER, Ocitaj(F_PARTN,IDPARTNER,"naz"),;
+       ? IDPARTNER, PADR( Ocitaj(F_PARTN,IDPARTNER,"naz"), 25 ),;
          STR(OSNDUG,12,2), STR(KAMATE,12,2), STR(OSNDUG+KAMATE,12,2)
        nUd1 += osndug
        nUd2 += kamate
